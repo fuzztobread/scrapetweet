@@ -5,7 +5,7 @@
 ## Features
 
 - Scrapes tweets from a Twitter list URL.
-- Filters tweets containing the keyword "engineers".
+- Filters tweets containing the keyword "$aapl stocks".
 - Excludes reposted tweets and counts unique mentions.
 - Handles scrolling to load more tweets until the specified criteria are met.
 - Exports the results to a JSON file.
