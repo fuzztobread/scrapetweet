@@ -94,15 +94,15 @@ const moment = require('moment');
     }
 
     if (consecutiveOldTweets < requiredOldTweets) {
-      // Wait to ensure new tweets are loaded
+      
       await page.waitForTimeout(scrollDelay);
 
-      // Scroll down to load more tweets
+   
       await page.evaluate(() => window.scrollBy(0, window.innerHeight));
       totalScrolls++;
       console.log(`Scroll ${totalScrolls}: Scrolled down to load more tweets`);
 
-      // Check if new tweets were loaded
+     
       const newTweetElements = await page.$$('article[data-testid="tweet"]');
       if (newTweetElements.length === previousTweetCount) {
         console.log('No new tweets found after scrolling, checking if we reached the end of the page...');
@@ -135,6 +135,6 @@ const moment = require('moment');
   fs.writeFileSync('twitter_mentions.json', JSON.stringify(results, null, 2));
   console.log('Results have been stored in twitter_mentions.json');
 
-  // Close the browser
+  
   await browser.close();
 })();
