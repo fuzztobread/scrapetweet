@@ -1,6 +1,6 @@
-# TweetScraper
+# ScrapeTweet
 
-`TweetScraper` is a Node.js script that uses Playwright to scrape tweets from a specific Twitter list. It extracts tweets containing the keyword "engineers" from the last 24 hours and stores relevant information in a JSON file.
+`ScrapeTweet` is a Node.js script that uses Playwright to scrape tweets from a specific Twitter list. It extracts tweets containing the keyword "engineers" from the last 24 hours and stores relevant information in a JSON file.
 
 ## Features
 
@@ -21,8 +21,8 @@
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/fuzztobread/tweetscraper.git
-   cd tweetscraper
+   git clone https://github.com/fuzztobread/scrapetweet.git
+   cd scrapetweet
 2. **Install Dependencies**:
    ```bash
    npm install
