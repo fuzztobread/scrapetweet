@@ -20,12 +20,12 @@ const moment = require('moment');
   await page.waitForSelector('[data-testid="tweet"]');
 
   let mentionCount = 0;
-  const scrollDelay = 3000; // Delay to allow tweets to load
-  const startTime = moment().subtract(24, 'hours'); // Set the start time for 24 hours ago
+  const scrollDelay = 3000; 
+  const startTime = moment().subtract(24, 'hours'); 
   let previousTweetCount = 0;
   let totalScrolls = 0;
   let consecutiveOldTweets = 0;
-  const requiredOldTweets = 3; // Number of tweets beyond 24 hours needed to stop
+  const requiredOldTweets = 3; 
 
   
   const tweetIDs = new Set();
