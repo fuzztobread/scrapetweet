@@ -32,7 +32,7 @@
 4. **Run**:
    ```bash
    node scrape.js
-5. **Check the results in twitter_mentions_export.json**
+5. **Check the results in twitter_mentions.json**
 6.  **To run the script every 24 hour, we can use utilize the crontab in the OS**
    - Setup cronjob:
    - In your terminal, run crontab -e
