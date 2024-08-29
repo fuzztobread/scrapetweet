@@ -26,6 +26,7 @@
 2. **Install Dependencies**:
    ```bash
    npm install
+   npx playwright install
 3. **Prepare Twitter Cookies**:
    - Ensure you have a twitter_cookies.json file with valid Twitter cookies. This file should be placed in the same directory as the script.
    - You can obtain cookies by inspecting your browser's storage while logged into Twitter and exporting them.
