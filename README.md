@@ -1,6 +1,6 @@
-# TweetScraper
+# ScraperTweet
 
-`TweetScraper` is a Node.js script that uses Playwright to scrape tweets from a specific Twitter list. It extracts tweets containing the keyword "engineers" from the last 24 hours and stores relevant information in a JSON file.
+`ScrapeTweet` is a Node.js script that uses Playwright to scrape tweets from a specific Twitter list. It extracts tweets containing the keyword "engineers" from the last 24 hours and stores relevant information in a JSON file.
 
 ## Features
 
