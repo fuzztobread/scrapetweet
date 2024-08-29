@@ -3,9 +3,7 @@ const fs = require('fs');
 const moment = require('moment');
 
 (async () => {
-  // Load cookies from JSON file
   const cookies = JSON.parse(fs.readFileSync('twitter_cookies.json', 'utf8'));
-
 
   const browser = await chromium.launch({ headless: false });
   const context = await browser.newContext();
@@ -13,10 +11,8 @@ const moment = require('moment');
 
   const page = await context.newPage();
 
-  
   await page.goto('https://twitter.com/i/lists/1587685082961149953');
 
- 
   await page.waitForSelector('[data-testid="tweet"]');
 
   let mentionCount = 0;
@@ -27,22 +23,20 @@ const moment = require('moment');
   let consecutiveOldTweets = 0;
   const requiredOldTweets = 3; 
 
-  
-  const tweetIDs = new Set();
+  const tweetIdentifiers = new Set();
   const mentions = [];
 
   while (consecutiveOldTweets < requiredOldTweets) {
-    
     const tweetElements = await page.$$('article[data-testid="tweet"]');
     console.log(`Found ${tweetElements.length} tweets`);
 
     for (let i = 0; i < tweetElements.length; i++) {
       const tweet = tweetElements[i];
       try {
-        const tweetID = await tweet.evaluate(el => el.getAttribute('data-tweet-id'));
-        const tweetText = await tweet.evaluate(el => el.textContent);
+        const tweetID = await tweet.evaluate(el => el.getAttribute('data-tweet-id')) || `${await tweet.innerText()}-${await tweet.$eval('time', el => el.getAttribute('datetime'))}`;
+        const tweetText = await tweet.innerText();
         const tweetTimeElement = await tweet.$('time');
-        const tweetLinkElement = await tweet.$('a[href^="/"]'); // Selector for tweet link
+        const tweetLinkElement = await tweet.$('a[href^="/"]'); 
         const isRepost = await tweet.$('[data-testid="socialContext"]');
 
         if (isRepost) {
@@ -55,7 +49,6 @@ const moment = require('moment');
           console.log(`Tweet time: ${tweetTime}`);
           console.log(`Tweet text: ${tweetText}`);
 
-          // Parse tweet time
           const tweetMoment = moment(tweetTime);
 
           if (!tweetMoment.isValid()) {
@@ -64,9 +57,8 @@ const moment = require('moment');
           }
 
           if (tweetMoment.isAfter(startTime)) {
-            // Process tweets within 24 hours
-            if (tweetText.toLowerCase().includes('$aapl') && !tweetIDs.has(tweetID)) {
-              tweetIDs.add(tweetID);
+            if (tweetText.toLowerCase().includes('$aapl') && !tweetIdentifiers.has(tweetID)) {
+              tweetIdentifiers.add(tweetID);
               mentionCount++;
               const tweetLink = tweetLinkElement ? await tweetLinkElement.getAttribute('href') : 'No link';
               mentions.push({
@@ -74,7 +66,6 @@ const moment = require('moment');
                 text: tweetText,
                 link: `https://twitter.com${tweetLink}`
               });
-              console.log(`Found mention: ${tweetText}`);
             }
             consecutiveOldTweets = 0; 
           } else {
@@ -94,15 +85,11 @@ const moment = require('moment');
     }
 
     if (consecutiveOldTweets < requiredOldTweets) {
-      
       await page.waitForTimeout(scrollDelay);
-
-   
       await page.evaluate(() => window.scrollBy(0, window.innerHeight));
       totalScrolls++;
       console.log(`Scroll ${totalScrolls}: Scrolled down to load more tweets`);
 
-     
       const newTweetElements = await page.$$('article[data-testid="tweet"]');
       if (newTweetElements.length === previousTweetCount) {
         console.log('No new tweets found after scrolling, checking if we reached the end of the page...');
@@ -121,20 +108,12 @@ const moment = require('moment');
     }
   }
 
-  console.log(`The keyword "$AAPL" was mentioned ${mentionCount} times in the last 24 hours.`);
+  console.log(`The keyword "$aapl" was mentioned ${mentionCount} times in the last 24 hours.`);
   console.log('Mentions found:', mentions);
 
-  // Store results in a JSON file
-  const results = {
-    keyword: "$AAPL",
-    mentionCount: mentionCount,
-    mentions: mentions,
-    scrapedAt: new Date().toISOString()
-  };
+  // Export the mentions to a JSON file
+  fs.writeFileSync('mentions.json', JSON.stringify(mentions, null, 2), 'utf8');
+  console.log('Mentions saved to mentions.json');
 
-  fs.writeFileSync('twitter_mentions.json', JSON.stringify(results, null, 2));
-  console.log('Results have been stored in twitter_mentions.json');
-
-  
   await browser.close();
 })();
