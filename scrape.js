@@ -65,7 +65,7 @@ const moment = require('moment');
 
           if (tweetMoment.isAfter(startTime)) {
             // Process tweets within 24 hours
-            if (tweetText.toLowerCase().includes('$aapl stocks') && !tweetIDs.has(tweetID)) {
+            if (tweetText.toLowerCase().includes('$aapl') && !tweetIDs.has(tweetID)) {
               tweetIDs.add(tweetID);
               mentionCount++;
               const tweetLink = tweetLinkElement ? await tweetLinkElement.getAttribute('href') : 'No link';
@@ -121,12 +121,12 @@ const moment = require('moment');
     }
   }
 
-  console.log(`The keyword "$AAPL stocks" was mentioned ${mentionCount} times in the last 24 hours.`);
+  console.log(`The keyword "$AAPL" was mentioned ${mentionCount} times in the last 24 hours.`);
   console.log('Mentions found:', mentions);
 
   // Store results in a JSON file
   const results = {
-    keyword: "$AAPL Stocks",
+    keyword: "$AAPL",
     mentionCount: mentionCount,
     mentions: mentions,
     scrapedAt: new Date().toISOString()
