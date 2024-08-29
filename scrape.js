@@ -10,55 +10,61 @@ const moment = require('moment');
   const browser = await chromium.launch({ headless: false });
   const context = await browser.newContext();
   await context.addCookies(cookies);
+
   const page = await context.newPage();
 
   // Navigate to Twitter list (replace with your list URL)
   await page.goto('https://twitter.com/i/lists/1587685082961149953');
+
+  // Wait for the page to load and tweets to be visible
   await page.waitForSelector('[data-testid="tweet"]');
 
   let mentionCount = 0;
-  const scrollDelay = 2000; // Adjusted delay to speed up the process
-  const startTime = moment().subtract(24, 'hours');
+  const scrollDelay = 3000; // Delay to allow tweets to load
+  const startTime = moment().subtract(24, 'hours'); // Set the start time for 24 hours ago
   let previousTweetCount = 0;
   let totalScrolls = 0;
   let consecutiveOldTweets = 0;
-  const requiredOldTweets = 3;
+  const requiredOldTweets = 3; // Number of tweets beyond 24 hours needed to stop
 
   // Use a Set to track unique tweet IDs
   const tweetIDs = new Set();
   const mentions = [];
 
   while (consecutiveOldTweets < requiredOldTweets) {
-    // Scrape tweets
+    // Scrape tweets and count mentions of "$POPCAT" within the last 24 hours
     const tweetElements = await page.$$('article[data-testid="tweet"]');
+    console.log(`Found ${tweetElements.length} tweets`);
 
-    if (tweetElements.length === 0) {
-      console.log('No tweets found, checking if we reached the end of the page...');
-      const endOfPage = await page.evaluate(() => document.documentElement.scrollHeight === window.innerHeight + window.scrollY);
-      if (endOfPage) {
-        console.log('Reached the end of the page.');
-        break;
-      }
-    }
-
-    // Process tweets in parallel
-    await Promise.all(tweetElements.map(async tweet => {
+    for (let i = 0; i < tweetElements.length; i++) {
+      const tweet = tweetElements[i];
       try {
         const tweetID = await tweet.evaluate(el => el.getAttribute('data-tweet-id'));
-        const tweetText = await tweet.innerText();
+        const tweetText = await tweet.evaluate(el => el.textContent);
         const tweetTimeElement = await tweet.$('time');
-        const tweetLinkElement = await tweet.$('a[href^="/"]');
+        const tweetLinkElement = await tweet.$('a[href^="/"]'); // Selector for tweet link
         const isRepost = await tweet.$('[data-testid="socialContext"]');
 
-        if (isRepost) return;
+        if (isRepost) {
+          console.log('Skipping reposted tweet');
+          continue;
+        }
 
         if (tweetTimeElement) {
           const tweetTime = await tweetTimeElement.getAttribute('datetime');
+          console.log(`Tweet time: ${tweetTime}`);
+          console.log(`Tweet text: ${tweetText}`);
+
+          // Parse tweet time
           const tweetMoment = moment(tweetTime);
 
-          if (!tweetMoment.isValid()) return;
+          if (!tweetMoment.isValid()) {
+            console.log(`Invalid date format: ${tweetTime}`);
+            continue;
+          }
 
           if (tweetMoment.isAfter(startTime)) {
+            // Process tweets within 24 hours
             if (tweetText.toLowerCase().includes('$aapl stocks') && !tweetIDs.has(tweetID)) {
               tweetIDs.add(tweetID);
               mentionCount++;
@@ -68,21 +74,30 @@ const moment = require('moment');
                 text: tweetText,
                 link: `https://twitter.com${tweetLink}`
               });
+              console.log(`Found mention: ${tweetText}`);
             }
-            consecutiveOldTweets = 0;
+            consecutiveOldTweets = 0; // Reset the count since this tweet is within 24 hours
           } else {
-            consecutiveOldTweets++;
-            if (consecutiveOldTweets >= requiredOldTweets) return;
+            consecutiveOldTweets++; // Increment if the tweet is beyond 24 hours
+            console.log(`Found ${consecutiveOldTweets} tweet(s) beyond 24 hours.`);
+            if (consecutiveOldTweets >= requiredOldTweets) {
+              console.log(`Found ${requiredOldTweets} tweets beyond 24 hours, stopping...`);
+              break;
+            }
           }
+        } else {
+          console.log('Time element not found for a tweet.');
         }
       } catch (error) {
         console.log('Error processing a tweet:', error);
       }
-    }));
+    }
 
     if (consecutiveOldTweets < requiredOldTweets) {
+      // Wait to ensure new tweets are loaded
       await page.waitForTimeout(scrollDelay);
 
+      // Scroll down to load more tweets
       await page.evaluate(() => window.scrollBy(0, window.innerHeight));
       totalScrolls++;
       console.log(`Scroll ${totalScrolls}: Scrolled down to load more tweets`);
@@ -90,28 +105,36 @@ const moment = require('moment');
       // Check if new tweets were loaded
       const newTweetElements = await page.$$('article[data-testid="tweet"]');
       if (newTweetElements.length === previousTweetCount) {
-        const endOfPage = await page.evaluate(() => document.documentElement.scrollHeight === window.innerHeight + window.scrollY);
+        console.log('No new tweets found after scrolling, checking if we reached the end of the page...');
+        const endOfPage = await page.evaluate(() => {
+          return document.documentElement.scrollHeight === window.innerHeight + window.scrollY;
+        });
+
         if (endOfPage) {
           console.log('Reached the end of the page.');
           break;
+        } else {
+          console.log('New tweets are expected to be loaded in the next scroll.');
         }
       }
       previousTweetCount = newTweetElements.length;
     }
   }
 
-  console.log(`The keyword "$aapl stocks" was mentioned ${mentionCount} times in the last 24 hours.`);
+  console.log(`The keyword "$AAPL stocks" was mentioned ${mentionCount} times in the last 24 hours.`);
   console.log('Mentions found:', mentions);
 
-  const exportData = {
+  // Store results in a JSON file
+  const results = {
+    keyword: "$AAPL Stocks",
     mentionCount: mentionCount,
     mentions: mentions,
     scrapedAt: new Date().toISOString()
   };
 
-  fs.writeFileSync('twitter_mentions_export.json', JSON.stringify(exportData, null, 2));
-  console.log('Data exported to twitter_mentions_export.json');
+  fs.writeFileSync('twitter_mentions.json', JSON.stringify(results, null, 2));
+  console.log('Results have been stored in twitter_mentions.json');
 
+  // Close the browser
   await browser.close();
 })();
-
