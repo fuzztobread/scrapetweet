@@ -6,17 +6,17 @@ const moment = require('moment');
   // Load cookies from JSON file
   const cookies = JSON.parse(fs.readFileSync('twitter_cookies.json', 'utf8'));
 
-  // Launch browser and set up context
+
   const browser = await chromium.launch({ headless: false });
   const context = await browser.newContext();
   await context.addCookies(cookies);
 
   const page = await context.newPage();
 
-  // Navigate to Twitter list (replace with your list URL)
+  
   await page.goto('https://twitter.com/i/lists/1587685082961149953');
 
-  // Wait for the page to load and tweets to be visible
+ 
   await page.waitForSelector('[data-testid="tweet"]');
 
   let mentionCount = 0;
@@ -27,12 +27,12 @@ const moment = require('moment');
   let consecutiveOldTweets = 0;
   const requiredOldTweets = 3; // Number of tweets beyond 24 hours needed to stop
 
-  // Use a Set to track unique tweet IDs
+  
   const tweetIDs = new Set();
   const mentions = [];
 
   while (consecutiveOldTweets < requiredOldTweets) {
-    // Scrape tweets and count mentions of "$POPCAT" within the last 24 hours
+    
     const tweetElements = await page.$$('article[data-testid="tweet"]');
     console.log(`Found ${tweetElements.length} tweets`);
 
@@ -76,9 +76,9 @@ const moment = require('moment');
               });
               console.log(`Found mention: ${tweetText}`);
             }
-            consecutiveOldTweets = 0; // Reset the count since this tweet is within 24 hours
+            consecutiveOldTweets = 0; 
           } else {
-            consecutiveOldTweets++; // Increment if the tweet is beyond 24 hours
+            consecutiveOldTweets++; 
             console.log(`Found ${consecutiveOldTweets} tweet(s) beyond 24 hours.`);
             if (consecutiveOldTweets >= requiredOldTweets) {
               console.log(`Found ${requiredOldTweets} tweets beyond 24 hours, stopping...`);
