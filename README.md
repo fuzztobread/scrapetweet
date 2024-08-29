@@ -35,9 +35,9 @@
    node scrape.js
 5. **Check the results in twitter_mentions_export.json**
 6.  **To run the script every 24 hour, we can use utilize the crontab in the OS**
-   Setup cronjob:
-   1. In your terminal, run crontab -e
-   2. Syntax for crontab is 0 15 * * * /path/to/your/scrape.js
-   3. Verify the crontab with crontab -l
-   4. Save and exit the process
+   - Setup cronjob:
+   - In your terminal, run crontab -e
+   - Syntax for crontab is 0 15 * * * /path/to/your/scrape.js
+   - Verify the crontab with crontab -l
+   - Save and exit the process
 
