@@ -21,8 +21,8 @@
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/fuzztobread/tweetscraper.git
-   cd tweetscraper
+   git clone https://github.com/fuzztobread/scrapetweet.git
+   cd scrapetweet
 2. **Install Dependencies**:
    ```bash
    npm install
