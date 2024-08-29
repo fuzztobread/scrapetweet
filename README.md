@@ -39,4 +39,5 @@
    1. In your terminal, run crontab -e
    2. Syntax for crontab is 0 15 * * * /path/to/your/scrape.js
    3. Verify the crontab with crontab -l
+   4. Save and exit the process
 
