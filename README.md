@@ -36,11 +36,13 @@
    - Setup MongoDB using MongoAtlas
    -Replace the MongoDB connection URI in the script with your own. You can find your connection string in the Atlas dashboard.
    -Example: const uri = "your-mongodb-connection-uri";
-4. **Run**:
+5. **Add .env file**:
+   - Make sure to add MongoDB URI, DBname and CollectionName to .env file and process the credentials from there
+6. **Run**:
    ```bash
    node scrape.js 
-5. **To run the script periodically in 24 hours, make sure to not close the server**
-6. **Run**:
+7. **To run the script periodically in 24 hours, make sure to not close the server**
+8. **Run**:
    ```bash
    node index.js
    - from the http://localhost:3000/search/{your keyword}, and check the mention count
