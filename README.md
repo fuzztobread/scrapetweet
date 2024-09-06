@@ -29,8 +29,9 @@
    npm install
    npx playwright install
 3. **Prepare Twitter Cookies**:
-   - Ensure you have a twitter_cookies.json file with valid Twitter cookies. This file should be placed in the same directory as the script.(or you can use the default cookies provided in the file)
+   - Ensure you have a twitter_cookies.json file with valid Twitter cookies.
    - You can obtain cookies by inspecting your browser's storage while logged into Twitter and exporting them.
+   - You can also use cookie editor extension from google chrome store after authenticating to twitter's site to grab the cookies.
 4. **Setup MongoDB**:
    - Setup MongoDB using MongoAtlas
    -Replace the MongoDB connection URI in the script with your own. You can find your connection string in the Atlas dashboard.
