@@ -16,7 +16,7 @@ async function connectToMongoDB() {
 
 async function saveTweetsToMongoDB(tweets, collection) {
   if (tweets.length > 0) {
-    // Use updateOne with upsert to avoid duplicates
+   
     const operations = tweets.map(tweet => ({
       updateOne: {
         filter: { id: tweet.id },
@@ -140,19 +140,18 @@ async function scrapeTweets() {
 
   console.log(`Scraped ${tweets.length} tweets in the last 24 hours.`);
 
-  // Save tweets to MongoDB
   await saveTweetsToMongoDB(tweets, collection);
 
   await browser.close();
 }
 
-// Schedule the scraping task to run every 24 hours
+
 cron.schedule('0 0 * * *', () => {
   console.log('Running scheduled tweet scraping task');
   scrapeTweets().catch(console.error);
 });
 
-// Run the scraping task immediately when the script starts
+
 scrapeTweets().catch(console.error);
 
 console.log('Tweet scraper scheduled. It will run every day at midnight.');
