@@ -4,9 +4,9 @@ const moment = require('moment');
 const { MongoClient } = require('mongodb');
 const cron = require('node-cron');
 
-const mongoURI = 'mongodb+srv://admin:admin@twittme.cpsmh.mongodb.net/?retryWrites=true&w=majority&appName=twittme';
-const dbName = 'twitterScraper';
-const collectionName = 'tweets';
+const mongoURI = process.env.MONGO_URI;
+const dbName = process.env.DB_NAME;
+const collectionName = process.env.COLLECTION_NAME;
 
 async function connectToMongoDB() {
   const client = new MongoClient(mongoURI);

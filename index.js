@@ -5,9 +5,9 @@ const moment = require('moment');
 const app = express();
 const port = 3000;
 
-const mongoURI = 'mongodb+srv://admin:admin@twittme.cpsmh.mongodb.net/?retryWrites=true&w=majority&appName=twittme';
-const dbName = 'twitterScraper';
-const collectionName = 'tweets';
+const mongoURI = process.env.MONGO_URI;
+const dbName = process.env.DB_NAME;
+const collectionName = process.env.COLLECTION_NAME;
 
 app.set('json spaces', 2);
 
