@@ -1,19 +1,21 @@
 # ScrapeTweet
 
-`ScrapeTweet` is a Node.js script that uses Playwright to scrape tweets from a specific Twitter list. It extracts tweets containing the keyword "$aapl" from the last 24 hours and stores relevant information in a JSON file.
-
-## Features
+`ScrapeTweet` is a Node.js script that uses Playwright to scrape tweets from a specific Twitter list. It collects all tweets from the last 24 hours and provides an API to query the mention count of any keyword within that dataset.
 
 - Scrapes tweets from a Twitter list URL.
-- Filters tweets containing the keyword "$aapl".
+- Collects tweets from the last 24 hours.
+- Provides an API to query any keyword and get the mention count from the scraped tweets.
 - Handles scrolling to load more tweets until the specified criteria are met.
-- Exports the results to a JSON file.
+- Exports the results to a JSON file and stores them in MongoDB.
 
 ## Prerequisites
 
 - Node.js (version 14 or higher)
 - Playwright
 - Moment.js
+- MongoDB
+- Node Cron
+- Express
 
 ## Installation
 
@@ -29,14 +31,19 @@
 3. **Prepare Twitter Cookies**:
    - Ensure you have a twitter_cookies.json file with valid Twitter cookies. This file should be placed in the same directory as the script.(or you can use the default cookies provided in the file)
    - You can obtain cookies by inspecting your browser's storage while logged into Twitter and exporting them.
+4. **Setup MongoDB**:
+   - Setup MongoDB using MongoAtlas
+   -Replace the MongoDB connection URI in the script with your own. You can find your connection string in the Atlas dashboard.
+   -Example: const uri = "your-mongodb-connection-uri";
 4. **Run**:
    ```bash
-   node scrape.js
-5. **Check the results in twitter_mentions.json**
-6.  **To run the script every 24 hour, we can use utilize the crontab in the OS**
-   - Setup cronjob:
-   - In your terminal, run crontab -e
-   - Syntax for crontab is 0 15 * * * /path/to/your/scrape.js
-   - Verify the crontab with crontab -l
-   - Save and exit the process
+   node scrape.js 
+5. **To run the script periodically in 24 hours, make sure to not close the server**
+6. **Run**:
+   ```bash
+   node index.js
+   - from the http://localhost:3000/search/{your keyword}, and check the mention count
+
+
+
 

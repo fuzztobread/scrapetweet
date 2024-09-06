@@ -4,7 +4,7 @@ const moment = require('moment');
 const { MongoClient } = require('mongodb');
 const cron = require('node-cron');
 
-const mongoURI = 'mongodb+srv://admin:admin@scrapetweet.cpsmh.mongodb.net/?retryWrites=true&w=majority&appName=scrapetweet';
+const mongoURI = 'mongodb+srv://admin:admin@twittme.cpsmh.mongodb.net/?retryWrites=true&w=majority&appName=twittme';
 const dbName = 'twitterScraper';
 const collectionName = 'tweets';
 
