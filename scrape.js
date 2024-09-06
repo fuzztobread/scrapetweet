@@ -146,13 +146,13 @@ async function scrapeTweets() {
   await browser.close();
 }
 
-
+// Schedule the scraping task to run every 24 hours
 cron.schedule('0 0 * * *', () => {
   console.log('Running scheduled tweet scraping task');
   scrapeTweets().catch(console.error);
 });
 
-
+// Run the scraping task immediately when the script starts
 scrapeTweets().catch(console.error);
 
 console.log('Tweet scraper scheduled. It will run every day at midnight.');

@@ -1,11 +1,11 @@
 # ScrapeTweet
 
-`ScrapeTweet` is a Node.js script that uses Playwright to scrape tweets from a specific Twitter list. It extracts tweets containing the keyword "$aapl stocks" from the last 24 hours and stores relevant information in a JSON file.
+`ScrapeTweet` is a Node.js script that uses Playwright to scrape tweets from a specific Twitter list. It extracts tweets containing the keyword "$aapl" from the last 24 hours and stores relevant information in a JSON file.
 
 ## Features
 
 - Scrapes tweets from a Twitter list URL.
-- Filters tweets containing the keyword "$aapl stocks".
+- Filters tweets containing the keyword "$aapl".
 - Handles scrolling to load more tweets until the specified criteria are met.
 - Exports the results to a JSON file.
 
@@ -32,7 +32,7 @@
 4. **Run**:
    ```bash
    node scrape.js
-5. **Check the results in twitter_mentions_export.json**
+5. **Check the results in twitter_mentions.json**
 6.  **To run the script every 24 hour, we can use utilize the crontab in the OS**
    - Setup cronjob:
    - In your terminal, run crontab -e
